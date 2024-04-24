@@ -1,5 +1,6 @@
 package app.melodymaze.discord.Manager.discord;
 
+import app.melodymaze.discord.Manager.listener.ButtonInteractionListener;
 import app.melodymaze.discord.Manager.listener.SelectionMenuListener;
 import app.melodymaze.discord.Manager.tickets.TicketCommandHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,10 @@ public class DiscordConfig {
         JDA jda = jdaBuilder.build();
         jda.awaitReady();
 
+        ButtonInteractionListener buttonInteractionListener = new ButtonInteractionListener();
+        jda.addEventListener(buttonInteractionListener);
+        autowireCapableBeanFactory.autowireBean(buttonInteractionListener);
+
         SelectionMenuListener selectionMenuListener = new SelectionMenuListener();
         jda.addEventListener(selectionMenuListener);
         autowireCapableBeanFactory.autowireBean(selectionMenuListener);
@@ -53,7 +58,6 @@ public class DiscordConfig {
                 .addSubcommands(new SubcommandData("setup", "Create the ticket menu"),
                         new SubcommandData("close", "Close your ticket"),
                         new SubcommandData("claim", "Claim the ticket"),
-                        new SubcommandData("unclaim", "Unclaim the ticket"),
                         new SubcommandData("add", "Add a user to the ticket")
                                 .addOption(OptionType.STRING, "member", "Member to be added", true)
                 )
